@@ -17,7 +17,7 @@ function This_MOD.start()
 
     --- Valores de la referencia
     This_MOD.setting_mod()
-
+GPrefix.var_dump(This_MOD)
     -- --- Fluidos a afectar
     -- This_MOD.get_fluids()
 
