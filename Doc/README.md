@@ -1,6 +1,6 @@
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/thumbnail.png)
 
-# 🪨 `zzzYAIM0425 0600 free minerals` [![English Flag](https://flagcdn.com/20x15/gb.png)](https://github.com/yaim0425/zzzYAIM0425-0600-free-minerals/blob/main/README.md)
+# 🧱 `zzzYAIM0425 0600 free minerals` [![English Flag](https://flagcdn.com/20x15/gb.png)](https://github.com/yaim0425/zzzYAIM0425-0600-free-minerals/blob/main/README.md)
 
 Este MOD, `zzzYAIM0425-0600-free-minerals`, añade recetas para **generar y eliminar minerales** que existen naturalmente en el mundo de Factorio.
 

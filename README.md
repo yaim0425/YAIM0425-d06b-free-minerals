@@ -1,6 +1,6 @@
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/thumbnail.png)
 
-# 🪨 `zzzYAIM0425 0600 free minerals` [![Bandera de España](https://flagcdn.com/20x15/es.png)](https://github.com/yaim0425/zzzYAIM0425-0600-free-minerals/blob/main/Doc/README.md)
+# 🧱 `zzzYAIM0425 0600 free minerals` [![Bandera de España](https://flagcdn.com/20x15/es.png)](https://github.com/yaim0425/zzzYAIM0425-0600-free-minerals/blob/main/Doc/README.md)
 
 This MOD, `zzzYAIM0425-0600-free-minerals`, adds recipes to **generate and destroy minerals** found naturally in the world of Factorio.
 
