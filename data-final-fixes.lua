@@ -41,7 +41,7 @@ function This_MOD.setting_mod()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     This_MOD.resource = {}
-    This_MOD.entity = GPrefix.entities["assembling-machine"]
+    This_MOD.entity = GPrefix.entities["assembling-machine-1"]
     This_MOD.item = GPrefix.get_item_create_entity(This_MOD.entity)
     This_MOD.recipe = GPrefix.recipes[This_MOD.item.name][1]
 
