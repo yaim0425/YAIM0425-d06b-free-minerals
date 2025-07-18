@@ -17,9 +17,9 @@ function This_MOD.start()
 
     --- Valores de la referencia
     This_MOD.setting_mod()
-GPrefix.var_dump(This_MOD)
-    -- --- Fluidos a afectar
-    -- This_MOD.get_fluids()
+
+    --- Fluidos a afectar
+    This_MOD.get_resource()
 
     -- --- Crear las recetas de los fluidos
     -- This_MOD.create_recipes()
@@ -122,40 +122,25 @@ end
 ---------------------------------------------------------------------------------------------------
 
 --- Fluidos a afectar
-function This_MOD.get_fluids()
+function This_MOD.get_resource()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    --- Se desean todos los liquidos
-    if This_MOD.all then
-        This_MOD.resource = GPrefix.resource
-        return
-    end
-
-    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-    --- Fluidos tomados del suelo
-    for _, tile in pairs(data.raw.tile) do
-        if tile.fluid then
-            This_MOD.resource[tile.fluid] = true
-        end
-    end
-
-    --- Fluidos minables
-    for _, resource in pairs(data.raw.resource) do
-        local results = resource.minable
-        results = results and results.results
-        for _, result in pairs(results or {}) do
-            if result.type == "fluid" then
-                This_MOD.resource[result.name] = true
+    --- Objectos minables
+    for _, element in pairs(data.raw.resource) do
+        if element.minable then
+            for _, result in pairs(element.minable.results or {}) do
+                if result.type == "item" then
+                    This_MOD.resource[result.name] = true
+                end
             end
         end
     end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    --- Cargar los fluidos encontrados
+    --- Cargar los minerales encontrados
     for name, _ in pairs(This_MOD.resource) do
-        This_MOD.resource[name] = GPrefix.resource[name]
+        This_MOD.resource[name] = GPrefix.items[name]
     end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
