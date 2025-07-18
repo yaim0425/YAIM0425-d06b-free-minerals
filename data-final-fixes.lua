@@ -71,7 +71,7 @@ function This_MOD.setting_mod()
     BackColor = data.raw["virtual-signal"]["signal-check"].icons[1].icon
     This_MOD.create = { icon = BackColor, scale = 0.5 }
 
-    BackColor = data.raw.item["uranium-ore"].icons[1].icon
+    BackColor = data.raw["virtual-signal"]["signal-anything"].icons[1].icon
     This_MOD.indicator = { icon = BackColor, scale = 0.25, shift = { 0, -5 } }
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
