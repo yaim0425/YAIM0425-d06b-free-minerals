@@ -18,18 +18,18 @@ function This_MOD.start()
     --- Valores de la referencia
     This_MOD.setting_mod()
 
-    --- Fluidos a afectar
-    This_MOD.get_fluids()
+    -- --- Fluidos a afectar
+    -- This_MOD.get_fluids()
 
-    --- Crear las recetas de los fluidos
-    This_MOD.create_recipes()
+    -- --- Crear las recetas de los fluidos
+    -- This_MOD.create_recipes()
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    --- Crear entidad y relacionado
-    This_MOD.create_entity()
-    This_MOD.create_item()
-    This_MOD.create_recipe()
+    -- --- Crear entidad y relacionado
+    -- This_MOD.create_entity()
+    -- This_MOD.create_item()
+    -- This_MOD.create_recipe()
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
@@ -40,8 +40,8 @@ function This_MOD.setting_mod()
     ---> Valores a duplicar
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    This_MOD.fluids = {}
-    This_MOD.entity = GPrefix.entities["assembling-machine-2"]
+    This_MOD.resource = {}
+    This_MOD.entity = GPrefix.entities["assembling-machine"]
     This_MOD.item = GPrefix.get_item_create_entity(This_MOD.entity)
     This_MOD.recipe = GPrefix.recipes[This_MOD.item.name][1]
 
@@ -53,7 +53,6 @@ function This_MOD.setting_mod()
     ---> Valores de configuración
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    This_MOD.all = GPrefix.Setting[This_MOD.id]["all"]
     This_MOD.amount = GPrefix.Setting[This_MOD.id]["amount"]
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -72,7 +71,7 @@ function This_MOD.setting_mod()
     BackColor = data.raw["virtual-signal"]["signal-check"].icons[1].icon
     This_MOD.create = { icon = BackColor, scale = 0.5 }
 
-    BackColor = data.raw.fluid["sulfuric-acid"].icons[1].icon
+    BackColor = data.raw.item["uranium-ore"].icons[1].icon
     This_MOD.indicator = { icon = BackColor, scale = 0.25, shift = { 0, -5 } }
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -103,7 +102,7 @@ function This_MOD.setting_mod()
         energy_required = 0.002,
 
         hide_from_player_crafting = true,
-        category = "crafting-with-fluid",
+        category = "basic-crafting",
         subgroup = "",
         order = "",
 
@@ -128,7 +127,7 @@ function This_MOD.get_fluids()
 
     --- Se desean todos los liquidos
     if This_MOD.all then
-        This_MOD.fluids = GPrefix.fluids
+        This_MOD.resource = GPrefix.resource
         return
     end
 
@@ -137,7 +136,7 @@ function This_MOD.get_fluids()
     --- Fluidos tomados del suelo
     for _, tile in pairs(data.raw.tile) do
         if tile.fluid then
-            This_MOD.fluids[tile.fluid] = true
+            This_MOD.resource[tile.fluid] = true
         end
     end
 
@@ -147,7 +146,7 @@ function This_MOD.get_fluids()
         results = results and results.results
         for _, result in pairs(results or {}) do
             if result.type == "fluid" then
-                This_MOD.fluids[result.name] = true
+                This_MOD.resource[result.name] = true
             end
         end
     end
@@ -155,8 +154,8 @@ function This_MOD.get_fluids()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     --- Cargar los fluidos encontrados
-    for name, _ in pairs(This_MOD.fluids) do
-        This_MOD.fluids[name] = GPrefix.fluids[name]
+    for name, _ in pairs(This_MOD.resource) do
+        This_MOD.resource[name] = GPrefix.resource[name]
     end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -168,7 +167,7 @@ function This_MOD.create_recipes()
 
     --- Recorrer los fluidos
     for action, propiety in pairs(This_MOD.actions) do
-        for _, fluid in pairs(This_MOD.fluids) do
+        for _, fluid in pairs(This_MOD.resource) do
             --- Crear una copia de los datos
             local Recipe = util.copy(This_MOD.recipe_base)
             local Fluid = util.copy(fluid)
@@ -250,7 +249,7 @@ function This_MOD.create_entity()
         })
 
         --- Modificar las recetas
-        for _, fluid in pairs(This_MOD.fluids) do
+        for _, fluid in pairs(This_MOD.resource) do
             local Recipe = data.raw.recipe[This_MOD.prefix .. fluid.name .. "-" .. action]
             Recipe.category = This_MOD.prefix .. action
         end
