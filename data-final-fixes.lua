@@ -152,30 +152,30 @@ function This_MOD.create_recipes()
 
     --- Recorrer los fluidos
     for action, propiety in pairs(This_MOD.actions) do
-        for _, fluid in pairs(This_MOD.resource) do
+        for _, resource in pairs(This_MOD.resource) do
             --- Crear una copia de los datos
             local Recipe = util.copy(This_MOD.recipe_base)
-            local Fluid = util.copy(fluid)
+            local Resource = util.copy(resource)
 
             --- Crear el subgroup
-            local Subgroup = This_MOD.prefix .. Fluid.subgroup .. "-" .. action
-            GPrefix.duplicate_subgroup(Fluid.subgroup, Subgroup)
+            local Subgroup = This_MOD.prefix .. Resource.subgroup .. "-" .. action
+            GPrefix.duplicate_subgroup(Resource.subgroup, Subgroup)
 
             --- Actualizar los datos
-            Recipe.name = This_MOD.prefix .. Fluid.name .. "-" .. action
-            Recipe.localised_name = Fluid.localised_name
-            Recipe.localised_description = Fluid.localised_description
+            Recipe.name = This_MOD.prefix .. Resource.name .. "-" .. action
+            Recipe.localised_name = Resource.localised_name
+            Recipe.localised_description = Resource.localised_description
 
             Recipe.subgroup = Subgroup
-            Recipe.order = Fluid.order
+            Recipe.order = Resource.order
 
-            Recipe.icons = Fluid.icons
+            Recipe.icons = Resource.icons
 
             --- Variaciones entre las recetas
             table.insert(Recipe.icons, This_MOD[action])
             Recipe[propiety] = { {
-                type = "fluid",
-                name = Fluid.name,
+                type = "item",
+                name = Resource.name,
                 amount = This_MOD.amount
             } }
 
