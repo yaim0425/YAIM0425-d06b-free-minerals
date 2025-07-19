@@ -30,8 +30,3 @@ The main goal is to simplify access and control of natural minerals for testing 
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/base/Screenshot%20(3).png)
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/base/Screenshot%20(4).png)
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/base/Screenshot%20(5).png)
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/base/Screenshot%20(6).png)
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/base/Screenshot%20(7).png)
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/base/Screenshot%20(8).png)
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/base/Screenshot%20(9).png)
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/base/Screenshot%20(10).png)
