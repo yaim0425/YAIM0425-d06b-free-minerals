@@ -25,6 +25,8 @@ The main goal is to simplify access and control of natural minerals for testing 
 - Built on the shared infrastructure of the `zzzYAIM0425` series  
 - All its content is available to anyone who needs it; I'm open to changes, fixes, and suggestions.
 
+## 🖼️ Screenshots
+
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/base/Screenshot%20(1).png)  
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/base/Screenshot%20(2).png)
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/base/Screenshot%20(3).png)

@@ -25,6 +25,8 @@ El objetivo principal es facilitar el acceso y control de los minerales naturale
 - Basado en la infraestructura de la serie `zzzYAIM0425`  
 - Todo su contenido está disponible para quien lo necesite; estoy abierto a cambios, correcciones y sugerencias.
 
+## 🖼️ Capturas
+
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/base/Screenshot%20(1).png)  
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/base/Screenshot%20(2).png)
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/base/Screenshot%20(3).png)
