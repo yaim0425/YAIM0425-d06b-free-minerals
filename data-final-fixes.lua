@@ -54,6 +54,7 @@ function This_MOD.setting_mod()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     This_MOD.amount = GPrefix.setting[This_MOD.id]["amount"]
+    This_MOD.stack_size = GPrefix.setting[This_MOD.id]["stack_size"]
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -102,7 +103,7 @@ function This_MOD.setting_mod()
         name = "",
         localised_name = {},
         localised_description = {},
-        energy_required = 0.002,
+        energy_required = 1,
 
         hide_from_player_crafting = true,
         category = "basic-crafting",
@@ -174,12 +175,21 @@ function This_MOD.create_recipes()
 
             Recipe.icons = Resource.icons
 
+            --- Calcular el valor a utilizar
+            local Amount = This_MOD.amount
+            if This_MOD.stack_size then
+                Amount = Amount * Resource.stack_size
+                if Amount > 65000 then
+                    Amount = 65000
+                end
+            end
+
             --- Variaciones entre las recetas
             table.insert(Recipe.icons, This_MOD[action])
             Recipe[propiety] = { {
                 type = "item",
                 name = Resource.name,
-                amount = This_MOD.amount
+                amount = Amount
             } }
 
             --- Crear el prototipo
