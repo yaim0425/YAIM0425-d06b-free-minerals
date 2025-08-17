@@ -10,7 +10,7 @@ data:extend({
 		},
 		order = "1",
 		setting_type = "startup",
-		default_value = false
+		default_value = true
 	}, {
 		type = "int-setting",
 		name = "zzzYAIM0425-0600-amount",
@@ -19,6 +19,6 @@ data:extend({
 		setting_type = "startup",
 		minimum_value = 2,
 		maximum_value = 65000,
-		default_value = 500
+		default_value = 10
 	}
 })
