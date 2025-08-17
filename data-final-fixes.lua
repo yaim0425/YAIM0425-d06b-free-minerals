@@ -167,16 +167,6 @@ function This_MOD.create_recipes()
             local Subgroup = This_MOD.prefix .. Resource.subgroup .. "-" .. action
             GPrefix.duplicate_subgroup(Resource.subgroup, Subgroup)
 
-            --- Actualizar los datos
-            Recipe.name = This_MOD.prefix .. Resource.name .. "-" .. action
-            Recipe.localised_name = Resource.localised_name
-            Recipe.localised_description = Resource.localised_description
-
-            Recipe.subgroup = Subgroup
-            Recipe.order = Resource.order
-
-            Recipe.icons = Resource.icons
-
             --- Calcular el valor a utilizar
             local Amount = This_MOD.amount
             if This_MOD.stack_size then
@@ -185,6 +175,17 @@ function This_MOD.create_recipes()
                     Amount = 65000
                 end
             end
+
+            --- Actualizar los datos
+            local Unit = This_MOD.stack_size and Resource.stack_size .. "x" .. This_MOD.amount or Amount
+            Recipe.name = This_MOD.prefix .. action .. "-" .. Unit .. "u-" .. resource.name
+            Recipe.localised_name = Resource.localised_name
+            Recipe.localised_description = Resource.localised_description
+
+            Recipe.subgroup = Subgroup
+            Recipe.order = Resource.order
+
+            Recipe.icons = Resource.icons
 
             --- Variaciones entre las recetas
             table.insert(Recipe.icons, This_MOD[action])
