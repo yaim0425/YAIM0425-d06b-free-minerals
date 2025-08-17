@@ -41,6 +41,7 @@ function This_MOD.setting_mod()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     This_MOD.resource = {}
+    This_MOD.recipes = { create = {}, delete = {} }
     This_MOD.entity = GPrefix.entities["assembling-machine-2"]
     This_MOD.item = GPrefix.get_item_create_entity(This_MOD.entity)
     This_MOD.recipe = GPrefix.recipes[This_MOD.item.name][1]
@@ -64,19 +65,19 @@ function This_MOD.setting_mod()
     ---> Indicador del MOD
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    local BackColor = ""
+    local Signal
 
-    BackColor = data.raw["virtual-signal"]["signal-deny"].icons[1].icon
-    This_MOD.delete = { icon = BackColor, scale = 0.5 }
+    Signal = data.raw["virtual-signal"]["signal-deny"].icons[1].icon
+    This_MOD.delete = { icon = Signal, scale = 0.5 }
 
-    BackColor = data.raw["virtual-signal"]["signal-check"].icons[1].icon
-    This_MOD.create = { icon = BackColor, scale = 0.5 }
+    Signal = data.raw["virtual-signal"]["signal-check"].icons[1].icon
+    This_MOD.create = { icon = Signal, scale = 0.5 }
 
-    BackColor = data.raw["virtual-signal"]["signal-star"].icons[1].icon
-    This_MOD.indicator_star = { icon = BackColor, scale = 0.25, shift = { 0, -5 } }
+    Signal = data.raw["virtual-signal"]["signal-star"].icons[1].icon
+    This_MOD.indicator_star = { icon = Signal, scale = 0.25, shift = { 0, -5 } }
 
-    BackColor = data.raw["virtual-signal"]["signal-black"].icons[1].icon
-    This_MOD.indicator_black = { icon = BackColor, scale = 0.25, shift = { 0, -5 } }
+    Signal = data.raw["virtual-signal"]["signal-black"].icons[1].icon
+    This_MOD.indicator_black = { icon = Signal, scale = 0.25, shift = { 0, -5 } }
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -86,9 +87,10 @@ function This_MOD.setting_mod()
     ---> Acciones
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    This_MOD.actions = {}
-    This_MOD.actions.create = "results"
-    This_MOD.actions.delete = "ingredients"
+    This_MOD.actions = {
+        delete = "ingredients",
+        create = "results"
+    }
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
