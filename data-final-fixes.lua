@@ -267,9 +267,8 @@ function This_MOD.create_entity()
         })
 
         --- Modificar las recetas
-        for _, resource in pairs(This_MOD.resource) do
-            local Recipe = data.raw.recipe[This_MOD.prefix .. resource.name .. "-" .. action]
-            Recipe.category = GPrefix.name .. "-free-" .. action
+        for _, recipe in pairs(This_MOD.recipes[action]) do
+            recipe.category = GPrefix.name .. "-free-" .. action
         end
     end
 
