@@ -1,7 +1,7 @@
 data:extend({
 	{
 		type = "bool-setting",
-		name = "zzzYAIM0425-0600-stack-size",
+		name = "zzzYAIM0425-0600-stack_size",
 		localised_name = { "gui-selector.stack-size" },
 		localised_description = { "",
 			{ "gui.off" }, " -> ", { "gui-blueprint-parametrisation.value" }, " = ", { "description.amount" }, "\n",
