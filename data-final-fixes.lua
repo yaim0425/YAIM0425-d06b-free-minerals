@@ -194,6 +194,9 @@ function This_MOD.create_recipes()
                 amount = Amount
             } }
 
+            --- Guardar la recetas creadas
+            table.insert(This_MOD.recipes[action], Recipe)
+
             --- Crear el prototipo
             GPrefix.extend(Recipe)
         end
