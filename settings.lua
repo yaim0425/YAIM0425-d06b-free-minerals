@@ -13,9 +13,6 @@ data:extend({
 		type = "int-setting",
 		name = "zzzYAIM0425-0600-amount",
 		localised_name = { "description.amount" },
-		localised_description = { "",
-			{ "gui-upgrade.module-limit" }, " ", "65k"
-		},
 		order = "2",
 		setting_type = "startup",
 		minimum_value = 2,
