@@ -2,11 +2,9 @@ data:extend({
 	{
 		type = "bool-setting",
 		name = "zzzYAIM0425-0600-stack_size",
-		localised_name = { "gui-selector.stack-size" },
+		localised_name = {"", { "description.amount" }, " x ", { "gui-selector.stack-size" }},
 		localised_description = { "",
-			{ "gui.off" }, " -> ", { "gui-blueprint-parametrisation.value" }, " = ", { "description.amount" }, "\n",
-			{ "gui.on" }, " -> ", { "gui-blueprint-parametrisation.value" }, " = ", { "description.amount" }, " x ", { "gui-selector.stack-size" }, "\n",
-			{ "gui-upgrade.module-limit" }, " ", "" .. 65000
+			{ "gui-upgrade.module-limit" }, " ", "65k"
 		},
 		order = "1",
 		setting_type = "startup",
@@ -15,6 +13,9 @@ data:extend({
 		type = "int-setting",
 		name = "zzzYAIM0425-0600-amount",
 		localised_name = { "description.amount" },
+		localised_description = { "",
+			{ "gui-upgrade.module-limit" }, " ", "65k"
+		},
 		order = "2",
 		setting_type = "startup",
 		minimum_value = 2,
