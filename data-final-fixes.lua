@@ -231,7 +231,6 @@ function This_MOD.create_entity()
         return
     end
 
-
     --- Duplicar la entidad
     local Entity = util.copy(This_MOD.entity)
 
