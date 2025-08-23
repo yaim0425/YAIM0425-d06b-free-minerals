@@ -4,3 +4,4 @@
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/pycoalprocessing/(4).png)
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/pycoalprocessing/(5).png)
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/pycoalprocessing/(6).png)
+![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/pycoalprocessing/(7).png)
