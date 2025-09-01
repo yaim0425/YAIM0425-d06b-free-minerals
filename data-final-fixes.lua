@@ -160,8 +160,8 @@ function This_MOD.create_recipes()
     for action, propiety in pairs(This_MOD.actions) do
         for _, resource in pairs(This_MOD.resource) do
             --- Crear una copia de los datos
-            local Recipe = util.copy(This_MOD.recipe_base)
-            local Resource = util.copy(resource)
+            local Recipe = GPrefix.copy(This_MOD.recipe_base)
+            local Resource = GPrefix.copy(resource)
 
             --- Crear el subgroup
             local Subgroup = This_MOD.prefix .. Resource.subgroup .. "-" .. action
@@ -232,7 +232,7 @@ function This_MOD.create_entity()
     end
 
     --- Duplicar la entidad
-    local Entity = util.copy(This_MOD.entity)
+    local Entity = GPrefix.copy(This_MOD.entity)
 
     --- Nombre de la entidad
     Entity.name = Name
@@ -287,7 +287,7 @@ function This_MOD.create_item()
     if GPrefix.items[Name] then return end
 
     --- Duplicar la entidad
-    local Item = util.copy(This_MOD.item)
+    local Item = GPrefix.copy(This_MOD.item)
 
     --- Nombre de la entidad
     Item.name = Name
@@ -312,7 +312,7 @@ function This_MOD.create_recipe()
     if data.raw.recipe[Name] then return end
 
     --- Duplicar la receta
-    local Recipe = util.copy(This_MOD.recipe)
+    local Recipe = GPrefix.copy(This_MOD.recipe)
 
     --- Cambiar los valores
     Recipe.name = Name
