@@ -41,6 +41,7 @@ function This_MOD.setting_mod()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     This_MOD.resource = {}
+    This_MOD.recipes = { create = {}, delete = {} }
     This_MOD.entity = GPrefix.entities["assembling-machine-2"]
     This_MOD.item = GPrefix.get_item_create_entity(This_MOD.entity)
     This_MOD.recipe = GPrefix.recipes[This_MOD.item.name][1]
@@ -54,6 +55,7 @@ function This_MOD.setting_mod()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     This_MOD.amount = GPrefix.setting[This_MOD.id]["amount"]
+    This_MOD.stack_size = GPrefix.setting[This_MOD.id]["stack_size"]
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -63,19 +65,19 @@ function This_MOD.setting_mod()
     ---> Indicador del MOD
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    local BackColor = ""
+    local Signal
 
-    BackColor = data.raw["virtual-signal"]["signal-deny"].icons[1].icon
-    This_MOD.delete = { icon = BackColor, scale = 0.5 }
+    Signal = data.raw["virtual-signal"]["signal-deny"].icons[1].icon
+    This_MOD.delete = { icon = Signal, scale = 0.5 }
 
-    BackColor = data.raw["virtual-signal"]["signal-check"].icons[1].icon
-    This_MOD.create = { icon = BackColor, scale = 0.5 }
+    Signal = data.raw["virtual-signal"]["signal-check"].icons[1].icon
+    This_MOD.create = { icon = Signal, scale = 0.5 }
 
-    BackColor = data.raw["virtual-signal"]["signal-star"].icons[1].icon
-    This_MOD.indicator_star = { icon = BackColor, scale = 0.25, shift = { 0, -5 } }
+    Signal = data.raw["virtual-signal"]["signal-star"].icons[1].icon
+    This_MOD.indicator = { icon = Signal, scale = 0.25, shift = { 0, -5 } }
 
-    BackColor = data.raw["virtual-signal"]["signal-black"].icons[1].icon
-    This_MOD.indicator_black = { icon = BackColor, scale = 0.25, shift = { 0, -5 } }
+    Signal = data.raw["virtual-signal"]["signal-black"].icons[1].icon
+    This_MOD.indicator_bg = { icon = Signal, scale = 0.25, shift = { 0, -5 } }
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -85,9 +87,10 @@ function This_MOD.setting_mod()
     ---> Acciones
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    This_MOD.actions = {}
-    This_MOD.actions.create = "results"
-    This_MOD.actions.delete = "ingredients"
+    This_MOD.actions = {
+        delete = "ingredients",
+        create = "results"
+    }
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -102,7 +105,7 @@ function This_MOD.setting_mod()
         name = "",
         localised_name = {},
         localised_description = {},
-        energy_required = 0.002,
+        energy_required = 1,
 
         hide_from_player_crafting = true,
         category = "basic-crafting",
@@ -157,15 +160,25 @@ function This_MOD.create_recipes()
     for action, propiety in pairs(This_MOD.actions) do
         for _, resource in pairs(This_MOD.resource) do
             --- Crear una copia de los datos
-            local Recipe = util.copy(This_MOD.recipe_base)
-            local Resource = util.copy(resource)
+            local Recipe = GPrefix.copy(This_MOD.recipe_base)
+            local Resource = GPrefix.copy(resource)
 
             --- Crear el subgroup
             local Subgroup = This_MOD.prefix .. Resource.subgroup .. "-" .. action
             GPrefix.duplicate_subgroup(Resource.subgroup, Subgroup)
 
+            --- Calcular el valor a utilizar
+            local Amount = This_MOD.amount
+            if This_MOD.stack_size then
+                Amount = Amount * Resource.stack_size
+                if Amount > 65000 then
+                    Amount = 65000
+                end
+            end
+
             --- Actualizar los datos
-            Recipe.name = This_MOD.prefix .. Resource.name .. "-" .. action
+            local Unit = This_MOD.stack_size and Resource.stack_size .. "x" .. This_MOD.amount or Amount
+            Recipe.name = This_MOD.prefix .. action .. "-" .. Unit .. "u-" .. resource.name
             Recipe.localised_name = Resource.localised_name
             Recipe.localised_description = Resource.localised_description
 
@@ -179,8 +192,11 @@ function This_MOD.create_recipes()
             Recipe[propiety] = { {
                 type = "item",
                 name = Resource.name,
-                amount = This_MOD.amount
+                amount = Amount
             } }
+
+            --- Guardar la recetas creadas
+            table.insert(This_MOD.recipes[action], Recipe)
 
             --- Crear el prototipo
             GPrefix.extend(Recipe)
@@ -215,9 +231,8 @@ function This_MOD.create_entity()
         return
     end
 
-
     --- Duplicar la entidad
-    local Entity = util.copy(This_MOD.entity)
+    local Entity = GPrefix.copy(This_MOD.entity)
 
     --- Nombre de la entidad
     Entity.name = Name
@@ -228,8 +243,8 @@ function This_MOD.create_entity()
 
     --- Cambiar las propiedades
     Entity.energy_source = { type = "void" }
-    table.insert(Entity.icons, This_MOD.indicator_black)
-    table.insert(Entity.icons, This_MOD.indicator_star)
+    table.insert(Entity.icons, This_MOD.indicator_bg)
+    table.insert(Entity.icons, This_MOD.indicator)
     Entity.minable.results = { {
         type = "item",
         name = GPrefix.name .. "-free-" .. This_MOD.item.name,
@@ -252,9 +267,8 @@ function This_MOD.create_entity()
         })
 
         --- Modificar las recetas
-        for _, resource in pairs(This_MOD.resource) do
-            local Recipe = data.raw.recipe[This_MOD.prefix .. resource.name .. "-" .. action]
-            Recipe.category = GPrefix.name .. "-free-" .. action
+        for _, recipe in pairs(This_MOD.recipes[action]) do
+            recipe.category = GPrefix.name .. "-free-" .. action
         end
     end
 
@@ -273,15 +287,15 @@ function This_MOD.create_item()
     if GPrefix.items[Name] then return end
 
     --- Duplicar la entidad
-    local Item = util.copy(This_MOD.item)
+    local Item = GPrefix.copy(This_MOD.item)
 
     --- Nombre de la entidad
     Item.name = Name
 
     --- Cambiar las propiedades
     Item.place_result = GPrefix.name .. "-free-" .. This_MOD.entity.name
-    table.insert(Item.icons, This_MOD.indicator_black)
-    table.insert(Item.icons, This_MOD.indicator_star)
+    table.insert(Item.icons, This_MOD.indicator_bg)
+    table.insert(Item.icons, This_MOD.indicator)
 
     --- Crear item
     GPrefix.extend(Item)
@@ -298,7 +312,7 @@ function This_MOD.create_recipe()
     if data.raw.recipe[Name] then return end
 
     --- Duplicar la receta
-    local Recipe = util.copy(This_MOD.recipe)
+    local Recipe = GPrefix.copy(This_MOD.recipe)
 
     --- Cambiar los valores
     Recipe.name = Name
