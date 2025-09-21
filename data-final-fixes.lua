@@ -48,11 +48,15 @@ function This_MOD.start()
             This_MOD.create_item(space)
             This_MOD.create_entity(space)
             This_MOD.create_recipe(space)
-            -- This_MOD.create_tech(space)
 
             --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
         end
     end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    --- Crear las recetas para los minerales
+    This_MOD.create_recipe_to_resource()
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
@@ -72,6 +76,7 @@ function This_MOD.setting_mod()
     --- Validar si se cargó antes
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
+    This_MOD.resource = {}
     This_MOD.to_be_processed = {}
     if This_MOD.processed then return end
 
@@ -123,9 +128,6 @@ function This_MOD.setting_mod()
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     --- Valores de la referencia en este MOD
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-    --- Contenedor de los recursos a afectar
-    This_MOD.resource = {}
 
     --- Valores de referencia
     This_MOD.old_entity_name = "assembling-machine-2"
@@ -520,6 +522,127 @@ function This_MOD.create_recipe(space)
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     GMOD.extend(Recipe)
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+end
+
+---------------------------------------------------------------------------
+
+function This_MOD.create_recipe_to_resource()
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Procesar cada liquido
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    local function validate_resource(action, propiety, resource)
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Crear el subgroup
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        local Subgroup = This_MOD.prefix .. resource.subgroup .. "-" .. action
+        GMOD.duplicate_subgroup(resource.subgroup, Subgroup)
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Duplicar el elemento
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        local Recipe = GMOD.copy(This_MOD.recipe_base)
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Calcular el valor a utilizar
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        local Amount = This_MOD.setting.amount
+        if This_MOD.setting.stack_size then
+            Amount = Amount * resource.stack_size
+            if Amount > 65000 then
+                Amount = 65000
+            end
+        end
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Cambiar algunas propiedades
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        local Unit = This_MOD.setting.stack_size and resource.stack_size .. "x" .. This_MOD.setting.amount or Amount
+        Recipe.name = This_MOD.prefix .. action .. "-" .. Unit .. "u-" .. resource.name
+        if data.raw.recipe[Recipe.name] then return end
+
+        Recipe.localised_name = resource.localised_name
+        Recipe.localised_description = resource.localised_description
+
+        Recipe.subgroup = Subgroup
+        Recipe.order = resource.order
+
+        Recipe.icons = resource.icons
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Variaciones entre las recetas
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        table.insert(Recipe.icons, This_MOD[action])
+        Recipe[propiety] = { {
+            type = "item",
+            name = resource.name,
+            amount = Amount,
+            ignored_by_stats = This_MOD.setting.amount
+        } }
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Crear el prototipo
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        GMOD.extend(Recipe)
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Recorrer cada mineral
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    for _, resource in pairs(This_MOD.resource) do
+        for action, propiety in pairs(This_MOD.actions) do
+            local Resource = GMOD.copy(resource)
+            validate_resource(action, propiety, Resource)
+        end
+    end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
