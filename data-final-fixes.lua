@@ -128,8 +128,8 @@ function This_MOD.setting_mod()
     This_MOD.resource = {}
 
     --- Valores de referencia
-    This_MOD.entity_name = "assembling-machine-2"
-    This_MOD.new_entity_name = GMOD.name .. "-free-" .. This_MOD.entity_name
+    This_MOD.old_entity_name = "assembling-machine-2"
+    This_MOD.new_entity_name = GMOD.name .. "-free-" .. This_MOD.old_entity_name
     This_MOD.new_localised_name = { "", { "entity-name.market" } }
 
     --- Acciones
