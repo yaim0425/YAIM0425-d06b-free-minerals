@@ -582,6 +582,8 @@ function This_MOD.create_recipe_to_resource()
 
         Recipe.icons = resource.icons
 
+        Recipe.category = This_MOD.prefix .. action
+
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
 
