@@ -30,8 +30,8 @@ function This_MOD.start()
     --- Valores de la referencia
     This_MOD.setting_mod()
 
-    -- --- Obtener los elementos
-    -- This_MOD.get_elements()
+    --- Obtener los elementos
+    This_MOD.get_elements()
 
     -- --- Modificar los elementos
     -- for iKey, spaces in pairs(This_MOD.to_be_processed) do
@@ -166,6 +166,126 @@ end
 ---------------------------------------------------------------------------
 ---[ Funciones locales ]---
 ---------------------------------------------------------------------------
+
+function This_MOD.get_elements()
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Función para analizar cada entidad
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    local function valide_entity(item, entity)
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Validación
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        --- Validar valores de referencia
+        if GMOD.entities[This_MOD.new_entity_name] then return end
+        if not entity then return end
+        if not item then return end
+
+        --- Validar si ya fue procesado
+        if
+            This_MOD.processed[entity.type] and
+            This_MOD.processed[entity.type][item.name]
+        then
+            return
+        end
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Valores para el proceso
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        local Space = {}
+        Space.item = item
+        Space.entity = entity
+
+        Space.recipe = GMOD.recipes[Space.item.name]
+        Space.recipe = Space.recipe and Space.recipe[1] or nil
+
+        Space.prefix = This_MOD.new_entity_name
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Guardar la información
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        This_MOD.to_be_processed[entity.type] = This_MOD.to_be_processed[entity.type] or {}
+        This_MOD.to_be_processed[entity.type][entity.name] = Space
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Fluidos a afectar
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    local function get_resource(resource)
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Objectos minables
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        for _, element in pairs(data.raw.resource) do
+            if element.minable then
+                for _, result in pairs(element.minable.results or {}) do
+                    if result.type == "item" then
+                        resource[result.name] = true
+                    end
+                end
+            end
+        end
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Cargar los minerales encontrados
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        for name, _ in pairs(resource) do
+            resource[name] = GMOD.items[name]
+        end
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Valores a afectar
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    valide_entity(
+        GMOD.items[This_MOD.old_entity_name],
+        GMOD.entities[This_MOD.old_entity_name]
+    )
+
+    get_resource(This_MOD.resource)
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+end
 
 ---------------------------------------------------------------------------
 
