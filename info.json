@@ -1,12 +1,12 @@
 {
-  "name": "YAIM0425-i5MOD06-free-minerals",
+  "name": "YAIM0425-i0MOD07-free-minerals",
   "version": "0.0.1",
-  "title": "YAIM0425 i5MOD06 Free minerals",
+  "title": "YAIM0425 i0MOD07 Free minerals",
   "author": "YAIM0425",
   "factorio_version": "2.0",
   "description": "Create a recipe that supplies and one that destroys minerals. [[I accept suggestions]]",
-  "homepage": "https://github.com/yaim0425/YAIM0425-i5MOD06-free-minerals",
+  "homepage": "https://github.com/yaim0425/YAIM0425-i0MOD07-free-minerals",
   "dependencies": [
-    "YAIM0425-i5MOD50-core"
+    "YAIM0425-i0MOD00-core"
   ]
 }
