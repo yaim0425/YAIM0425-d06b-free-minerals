@@ -1,7 +1,0 @@
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/factorioplus/(1).png)  
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/factorioplus/(2).png)
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/factorioplus/(3).png)
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/factorioplus/(4).png)
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/factorioplus/(5).png)
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/factorioplus/(6).png)
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/factorioplus/(7).png)

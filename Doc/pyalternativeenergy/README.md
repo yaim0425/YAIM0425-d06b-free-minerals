@@ -1,7 +1,0 @@
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/pyalternativeenergy/(1).png)  
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/pyalternativeenergy/(2).png)
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/pyalternativeenergy/(3).png)
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/pyalternativeenergy/(4).png)
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/pyalternativeenergy/(5).png)
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/pyalternativeenergy/(6).png)
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/pyalternativeenergy/(7).png)

@@ -1,8 +1,0 @@
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/pyalienlife/(1).png)  
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/pyalienlife/(2).png)
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/pyalienlife/(3).png)
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/pyalienlife/(4).png)
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/pyalienlife/(5).png)
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/pyalienlife/(6).png)
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/pyalienlife/(7).png)
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0600-free-minerals/main/Doc/pyalienlife/(8).png)
