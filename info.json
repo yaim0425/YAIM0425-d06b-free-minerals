@@ -4,7 +4,7 @@
   "title": "YAIM0425 d06b Free minerals",
   "author": "YAIM0425",
   "factorio_version": "2.0",
-  "description": "Create a recipe that supplies and one that destroys minerals. [[I accept suggestions]]",
+  "description": "Create a recipe that supplies and another recipe that destroys minerals. [[I accept suggestions]]",
   "homepage": "https://github.com/yaim0425/YAIM0425-d06b-free-minerals",
   "dependencies": [
     "YAIM0425-d00b-core"
