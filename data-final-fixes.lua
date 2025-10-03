@@ -1,0 +1,660 @@
+---------------------------------------------------------------------------
+---[ data-final-fixes.lua ]---
+---------------------------------------------------------------------------
+
+
+
+
+
+---------------------------------------------------------------------------
+---[ Contenedor de este archivo ]---
+---------------------------------------------------------------------------
+
+local This_MOD = GMOD.get_id_and_name()
+if not This_MOD then return end
+GMOD[This_MOD.id] = This_MOD
+
+---------------------------------------------------------------------------
+
+
+
+
+
+---------------------------------------------------------------------------
+---[ Inicio del MOD ]---
+---------------------------------------------------------------------------
+
+function This_MOD.start()
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    --- Valores de la referencia
+    This_MOD.setting_mod()
+
+    --- Obtener los elementos
+    This_MOD.get_elements()
+
+    --- Modificar los elementos
+    for _, spaces in pairs(This_MOD.to_be_processed) do
+        for _, space in pairs(spaces) do
+            --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+            --- Crear los elementos
+            This_MOD.create_item(space)
+            This_MOD.create_entity(space)
+            This_MOD.create_recipe(space)
+
+            --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        end
+    end
+
+    --- Crear las recetas para los minerales
+    This_MOD.create_recipe___free()
+
+    --- Ejecutar otro MOD
+    GMOD.d01b.start()
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+end
+
+---------------------------------------------------------------------------
+
+
+
+
+
+---------------------------------------------------------------------------
+---[ Valores de la referencia ]---
+---------------------------------------------------------------------------
+
+function This_MOD.setting_mod()
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Validar si se cargó antes
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    --- Contenedor de los elementos que el MOD modoficará
+    This_MOD.to_be_processed = {}
+
+    --- Validar si se cargó antes
+    if This_MOD.setting then return end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Valores de la referencia en todos los MODs
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    --- Cargar la configuración
+    This_MOD.setting = GMOD.setting[This_MOD.id] or {}
+
+    --- Indicador del mod
+    This_MOD.delete = { icon = GMOD.signal.deny, scale = 0.5 }
+    This_MOD.create = { icon = GMOD.signal.check, scale = 0.5 }
+
+    This_MOD.indicator = { icon = GMOD.signal.star, scale = 0.25, shift = { 0, -5 } }
+    This_MOD.indicator_bg = { icon = GMOD.signal.black, scale = 0.25, shift = { 0, -5 } }
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Valores de la referencia en este MOD
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    --- Valores de referencia
+    This_MOD.old_entity_name = "assembling-machine-2"
+    This_MOD.new_entity_name = GMOD.name .. "-A00A-market"
+    This_MOD.new_localised_name = { "", { "entity-name.market" } }
+
+    --- Acciones
+    This_MOD.actions = {
+        delete = "ingredients",
+        create = "results"
+    }
+
+    --- Receta base
+    This_MOD.recipe_base = {
+        type = "recipe",
+        name = "",
+        localised_name = {},
+        localised_description = {},
+        energy_required = 1,
+
+        hide_from_player_crafting = true,
+        subgroup = "",
+        order = "",
+
+        ingredients = {},
+        results = {}
+    }
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+end
+
+---------------------------------------------------------------------------
+
+
+
+
+
+---------------------------------------------------------------------------
+---[ Funciones locales ]---
+---------------------------------------------------------------------------
+
+function This_MOD.get_elements()
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Función para analizar cada entidad
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    local function valide_entity(item, entity)
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Validación
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        --- Validar valores de referencia
+        if GMOD.entities[This_MOD.new_entity_name] then return end
+
+        --- Validar la entity
+        if not entity then return end
+
+        --- Validar el item
+        if not item then return end
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Valores para el proceso
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        local Space = {}
+        Space.item = item
+        Space.entity = entity
+
+        Space.recipe = GMOD.recipes[Space.item.name]
+        Space.recipe = Space.recipe and Space.recipe[1] or nil
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Guardar la información
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        This_MOD.to_be_processed[entity.type] = This_MOD.to_be_processed[entity.type] or {}
+        This_MOD.to_be_processed[entity.type][entity.name] = Space
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Fluidos a afectar
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    local function get_resource(resource)
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Objectos minables
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        for _, element in pairs(data.raw.resource) do
+            if element.minable then
+                for _, result in pairs(element.minable.results or {}) do
+                    if result.type == "item" then
+                        resource[result.name] = true
+                    end
+                end
+            end
+        end
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Cargar los minerales encontrados
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        for name, _ in pairs(resource) do
+            resource[name] = GMOD.items[name]
+        end
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Valores a afectar
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    --- Entidad que se va a duplicar
+    valide_entity(
+        GMOD.items[This_MOD.old_entity_name],
+        GMOD.entities[This_MOD.old_entity_name]
+    )
+
+    --- Material a afectar
+    This_MOD.resource = {}
+    get_resource(This_MOD.resource)
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+end
+
+---------------------------------------------------------------------------
+
+function This_MOD.create_item(space)
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Validación
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    if not space.item then return end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Duplicar el elemento
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    local Item = GMOD.copy(space.item)
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Cambiar algunas propiedades
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    --- Nombre
+    Item.name = This_MOD.new_entity_name
+
+    --- Apodo
+    Item.localised_name = This_MOD.new_localised_name
+
+    --- Actualizar el order
+    local Order = tonumber(Item.order) + 1
+    Item.order = GMOD.pad_left_zeros(#Item.order, Order)
+
+    --- Agregar indicador del MOD
+    table.insert(Item.icons, This_MOD.indicator_bg)
+    table.insert(Item.icons, This_MOD.indicator)
+
+    --- Entidad a crear
+    Item.place_result = This_MOD.new_entity_name
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    ---- Crear el prototipo
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    GMOD.extend(Item)
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+end
+
+function This_MOD.create_entity(space)
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Validación
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    if not space.entity then return end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Duplicar el elemento
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    local Entity = GMOD.copy(space.entity)
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Cambiar algunas propiedades
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    --- Nombre
+    Entity.name = This_MOD.new_entity_name
+
+    --- Apodo
+    Entity.localised_name = This_MOD.new_localised_name
+
+    --- Objeto a minar
+    Entity.minable.results = { {
+        type = "item",
+        name = This_MOD.new_entity_name,
+        amount = 1
+    } }
+
+    --- Elimnar propiedades inecesarias
+    Entity.fast_replaceable_group = nil
+    Entity.next_upgrade = nil
+
+    --- No usa energía
+    Entity.energy_source = { type = "void" }
+
+    --- Categoria de fabricación
+    Entity.crafting_categories = {}
+
+    --- Agregar indicador del MOD
+    Entity.icons = GMOD.copy(space.item.icons)
+    table.insert(Entity.icons, This_MOD.indicator_bg)
+    table.insert(Entity.icons, This_MOD.indicator)
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Crear el prototipo
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    GMOD.extend(Entity)
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+end
+
+function This_MOD.create_recipe(space)
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Validación
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    if not space.recipe then return end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Duplicar el elemento
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    local Recipe = GMOD.copy(space.recipe)
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Cambiar algunas propiedades
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    --- Nombre
+    Recipe.name = This_MOD.new_entity_name
+
+    --- Apodo y descripción
+    Recipe.localised_name = This_MOD.new_localised_name
+
+    --- Elimnar propiedades inecesarias
+    Recipe.main_product = nil
+
+    --- Productividad
+    Recipe.allow_productivity = true
+    Recipe.maximum_productivity = 1000000
+
+    --- Receta desbloqueada por tecnología
+    Recipe.enabled = true
+
+    --- Agregar indicador del MOD
+    Recipe.icons = GMOD.copy(space.item.icons)
+    table.insert(Recipe.icons, This_MOD.indicator_bg)
+    table.insert(Recipe.icons, This_MOD.indicator)
+
+    --- Actualizar el order
+    local Order = tonumber(Recipe.order) + 1
+    Recipe.order = GMOD.pad_left_zeros(#Recipe.order, Order)
+
+    --- Ingredientes
+    Recipe.ingredients = {}
+
+    --- Resultados
+    Recipe.results = { {
+        type = "item",
+        name = This_MOD.new_entity_name,
+        amount = 1
+    } }
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    ---- Crear el prototipo
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    GMOD.extend(Recipe)
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+end
+
+---------------------------------------------------------------------------
+
+function This_MOD.create_recipe___free()
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Procesar cada recurso
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    local function validate_resource(action, propiety, resource)
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Calcular el valor a utilizar
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        local Amount = This_MOD.setting.amount
+        if This_MOD.setting.stack_size then
+            Amount = Amount * resource.stack_size
+            if Amount > 65000 then
+                Amount = 65000
+            end
+        end
+
+        local Name =
+            This_MOD.prefix ..
+            action .. "-" .. (
+                This_MOD.setting.stack_size and
+                resource.stack_size .. "x" .. This_MOD.setting.amount or
+                Amount
+            ) .. "u-" ..
+            resource.name
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Validación
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        if data.raw.recipe[Name] then return end
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Crear el subgroup
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        local Subgroup =
+            This_MOD.prefix ..
+            resource.subgroup .. "-" ..
+            action
+        GMOD.duplicate_subgroup(resource.subgroup, Subgroup)
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Duplicar el elemento
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        local Recipe = GMOD.copy(This_MOD.recipe_base)
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Cambiar algunas propiedades
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        --- Nombre
+        Recipe.name = Name
+
+        --- Apodo y descripción
+        Recipe.localised_name = resource.localised_name
+        Recipe.localised_description = resource.localised_description
+
+        --- Subgrupo y Order
+        Recipe.subgroup = Subgroup
+        Recipe.order = resource.order
+
+        --- Agregar indicador del MOD
+        Recipe.icons = GMOD.copy(resource.icons)
+
+        --- Categoria de fabricación
+        Recipe.category = This_MOD.prefix .. action
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Variaciones entre las recetas
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        table.insert(Recipe.icons, This_MOD[action])
+        Recipe[propiety] = { {
+            type = "item",
+            name = resource.name,
+            amount = Amount,
+            ignored_by_stats = This_MOD.setting.amount
+        } }
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Crear el prototipo
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        GMOD.extend(Recipe)
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Recorrer cada mineral
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    for _, resource in pairs(This_MOD.resource) do
+        for action, propiety in pairs(This_MOD.actions) do
+            local Resource = GMOD.copy(resource)
+            validate_resource(action, propiety, Resource)
+        end
+    end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Crear categoria y agrega a la maquita
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    local Category = GMOD.entities[This_MOD.new_entity_name].crafting_categories
+    for action, _ in pairs(This_MOD.actions) do
+        local Name = This_MOD.prefix .. action
+        if GMOD.get_key(Category, Name) then break end
+        GMOD.extend({ type = "recipe-category", name = Name })
+        table.insert(Category, Name)
+    end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+end
+
+---------------------------------------------------------------------------
+
+
+
+
+
+---------------------------------------------------------------------------
+---[ Iniciar el MOD ]---
+---------------------------------------------------------------------------
+
+This_MOD.start()
+
+---------------------------------------------------------------------------
