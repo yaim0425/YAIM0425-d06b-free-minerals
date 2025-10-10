@@ -43,9 +43,14 @@ This_MOD.setting = {}
 table.insert(This_MOD.setting, {
 	type = "bool",
 	name = "stack_size",
-	localised_name = { "", { "description.amount" }, " x ", { "gui-selector.stack-size" } },
+	localised_name = { "",
+		{ "description.amount" },
+		" x ",
+		{ "gui-selector.stack-size" }
+	},
 	localised_description = { "",
-		{ "gui-upgrade.module-limit" }, " ", "65k"
+		{ "gui-upgrade.module-limit" },
+		" 65k"
 	},
 	default_value = true
 })
@@ -72,10 +77,10 @@ table.insert(This_MOD.setting, {
 
 --- Información adicional
 for order, setting in pairs(This_MOD.setting) do
-    setting.type = setting.type .. "-setting"
-    setting.name = This_MOD.prefix .. setting.name
-    setting.order = GMOD.pad_left_zeros(GMOD.digit_count(order), order)
-    setting.setting_type = "startup"
+	setting.type = setting.type .. "-setting"
+	setting.name = This_MOD.prefix .. setting.name
+	setting.order = GMOD.pad_left_zeros(GMOD.digit_count(order), order)
+	setting.setting_type = "startup"
 end
 
 ---------------------------------------------------------------------------
