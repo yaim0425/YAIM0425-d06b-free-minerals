@@ -478,7 +478,8 @@ function This_MOD.create_recipe___free()
 
         local Name =
             This_MOD.prefix ..
-            action .. "-" .. (
+            action .. "-" ..
+            (
                 This_MOD.setting.stack_size and
                 resource.stack_size .. "x" .. This_MOD.setting.amount or
                 Amount
