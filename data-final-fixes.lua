@@ -517,11 +517,15 @@ function This_MOD.create_recipe___free()
         --- Crear el subgroup
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-        local Subgroup =
+        --- Valores
+        local New_subgroup =
             This_MOD.prefix ..
             space.item.subgroup .. "-" ..
             space.action
-        GMOD.duplicate_subgroup(space.item.subgroup, Subgroup)
+        local Old_subgroup = space.item.subgroup
+
+        --- Acción
+        GMOD.duplicate_subgroup(Old_subgroup, New_subgroup)
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -549,11 +553,11 @@ function This_MOD.create_recipe___free()
         Recipe.name = Name
 
         --- Apodo y descripción
-        Recipe.localised_name = space.item.localised_name
-        Recipe.localised_description = space.item.localised_description
+        Recipe.localised_name = GMOD.copy(space.item.localised_name)
+        Recipe.localised_description = { "" }
 
         --- Subgrupo y Order
-        Recipe.subgroup = Subgroup
+        Recipe.subgroup = New_subgroup
         Recipe.order = space.item.order
 
         --- Agregar indicador del MOD
