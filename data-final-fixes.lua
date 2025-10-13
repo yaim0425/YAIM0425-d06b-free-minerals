@@ -191,7 +191,19 @@ function This_MOD.get_elements()
     --- Fluidos a afectar
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    local function get_resource(resource)
+    local function get_resource()
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Variable a usar
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        local Output = {}
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
         --- Objectos minables
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -200,7 +212,15 @@ function This_MOD.get_elements()
             if element.minable then
                 for _, result in pairs(element.minable.results or {}) do
                     if result.type == "item" then
-                        resource[result.name] = true
+                        local Item = GMOD.items[result.name]
+                        local Amount = This_MOD.setting.amount
+                        if This_MOD.setting.stack_size then
+                            Amount = Amount * Item.stack_size
+                            Output[result.name] =
+                                Amount > 65000 and
+                                65000 or
+                                Amount
+                        end
                     end
                 end
             end
@@ -213,12 +233,10 @@ function This_MOD.get_elements()
 
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-        --- Cargar los minerales encontrados
+        --- Devolver el resultado
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-        for name, _ in pairs(resource) do
-            resource[name] = GMOD.items[name]
-        end
+        return Output
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     end
@@ -240,8 +258,7 @@ function This_MOD.get_elements()
     )
 
     --- Material a afectar
-    This_MOD.resource = {}
-    get_resource(This_MOD.resource)
+    This_MOD.resource = get_resource()
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
@@ -463,28 +480,20 @@ function This_MOD.create_recipe___free()
     --- Procesar cada recurso
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    local function validate_resource(action, propiety, resource)
+    local function validate_resource(args)
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
         --- Calcular el valor a utilizar
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-        local Amount = This_MOD.setting.amount
-        if This_MOD.setting.stack_size then
-            Amount = Amount * resource.stack_size
-            if Amount > 65000 then
-                Amount = 65000
-            end
-        end
-
         local Name =
             This_MOD.prefix ..
-            action .. "-" ..
+            args.action .. "-" ..
             (
                 This_MOD.setting.stack_size and
-                resource.stack_size .. "x" .. This_MOD.setting.amount or
-                Amount
+                args.item.stack_size .. "x" .. This_MOD.setting.amount or
+                args.amount
             ) .. "u-" ..
-            resource.name
+            args.item.name
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -510,9 +519,9 @@ function This_MOD.create_recipe___free()
 
         local Subgroup =
             This_MOD.prefix ..
-            resource.subgroup .. "-" ..
-            action
-        GMOD.duplicate_subgroup(resource.subgroup, Subgroup)
+            args.item.subgroup .. "-" ..
+            args.action
+        GMOD.duplicate_subgroup(args.item.subgroup, Subgroup)
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -540,18 +549,18 @@ function This_MOD.create_recipe___free()
         Recipe.name = Name
 
         --- Apodo y descripción
-        Recipe.localised_name = resource.localised_name
-        Recipe.localised_description = resource.localised_description
+        Recipe.localised_name = args.item.localised_name
+        Recipe.localised_description = args.item.localised_description
 
         --- Subgrupo y Order
         Recipe.subgroup = Subgroup
-        Recipe.order = resource.order
+        Recipe.order = args.item.order
 
         --- Agregar indicador del MOD
-        Recipe.icons = GMOD.copy(resource.icons)
+        Recipe.icons = GMOD.copy(args.item.icons)
 
         --- Categoria de fabricación
-        Recipe.category = This_MOD.prefix .. action
+        Recipe.category = This_MOD.prefix .. args.action
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -563,11 +572,11 @@ function This_MOD.create_recipe___free()
         --- Variaciones entre las recetas
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-        table.insert(Recipe.icons, This_MOD[action])
-        Recipe[propiety] = { {
+        table.insert(Recipe.icons, This_MOD[args.action])
+        Recipe[args.propiety] = { {
             type = "item",
-            name = resource.name,
-            amount = Amount,
+            name = args.item.name,
+            amount = args.amount,
             ignored_by_stats = This_MOD.setting.amount
         } }
 
@@ -596,10 +605,14 @@ function This_MOD.create_recipe___free()
     --- Recorrer cada mineral
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    for _, resource in pairs(This_MOD.resource) do
+    for resource, amount in pairs(This_MOD.resource) do
         for action, propiety in pairs(This_MOD.actions) do
-            local Resource = GMOD.copy(resource)
-            validate_resource(action, propiety, Resource)
+            validate_resource({
+                item = GMOD.items[resource],
+                action = action,
+                amount = amount,
+                propiety = propiety
+            })
         end
     end
 
