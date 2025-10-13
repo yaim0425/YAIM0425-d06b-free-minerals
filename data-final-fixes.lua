@@ -480,20 +480,20 @@ function This_MOD.create_recipe___free()
     --- Procesar cada recurso
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    local function validate_resource(args)
+    local function validate_resource(space)
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
         --- Calcular el valor a utilizar
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
         local Name =
             This_MOD.prefix ..
-            args.action .. "-" ..
+            space.action .. "-" ..
             (
                 This_MOD.setting.stack_size and
-                args.item.stack_size .. "x" .. This_MOD.setting.amount or
-                args.amount
+                space.item.stack_size .. "x" .. This_MOD.setting.amount or
+                space.amount
             ) .. "u-" ..
-            args.item.name
+            space.item.name
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -519,9 +519,9 @@ function This_MOD.create_recipe___free()
 
         local Subgroup =
             This_MOD.prefix ..
-            args.item.subgroup .. "-" ..
-            args.action
-        GMOD.duplicate_subgroup(args.item.subgroup, Subgroup)
+            space.item.subgroup .. "-" ..
+            space.action
+        GMOD.duplicate_subgroup(space.item.subgroup, Subgroup)
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -549,18 +549,18 @@ function This_MOD.create_recipe___free()
         Recipe.name = Name
 
         --- Apodo y descripción
-        Recipe.localised_name = args.item.localised_name
-        Recipe.localised_description = args.item.localised_description
+        Recipe.localised_name = space.item.localised_name
+        Recipe.localised_description = space.item.localised_description
 
         --- Subgrupo y Order
         Recipe.subgroup = Subgroup
-        Recipe.order = args.item.order
+        Recipe.order = space.item.order
 
         --- Agregar indicador del MOD
-        Recipe.icons = GMOD.copy(args.item.icons)
+        Recipe.icons = GMOD.copy(space.item.icons)
 
         --- Categoria de fabricación
-        Recipe.category = This_MOD.prefix .. args.action
+        Recipe.category = This_MOD.prefix .. space.action
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -572,11 +572,11 @@ function This_MOD.create_recipe___free()
         --- Variaciones entre las recetas
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-        table.insert(Recipe.icons, This_MOD[args.action])
-        Recipe[args.propiety] = { {
+        table.insert(Recipe.icons, This_MOD[space.action])
+        Recipe[space.propiety] = { {
             type = "item",
-            name = args.item.name,
-            amount = args.amount,
+            name = space.item.name,
+            amount = space.amount,
             ignored_by_stats = This_MOD.setting.amount
         } }
 
