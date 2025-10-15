@@ -191,7 +191,7 @@ function This_MOD.get_elements()
 
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-    --- Fluidos a afectar
+    --- Mierales a afectar
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     local function get_resource()
@@ -260,7 +260,7 @@ function This_MOD.get_elements()
         GMOD.entities[This_MOD.old_entity_name]
     )
 
-    --- Material a afectar
+    --- Mierales a afectar
     This_MOD.resource = get_resource()
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
