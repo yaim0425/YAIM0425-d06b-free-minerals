@@ -42,6 +42,9 @@ function This_MOD.start()
     --- Crear las recetas para los minerales
     This_MOD.create_recipe___free()
 
+    --- Fijar las posiciones actual
+    GMOD.d00b.change_orders()
+
     --- Ejecutar otro MOD
     if GMOD.d01b then GMOD.d01b.start() end
 
@@ -188,10 +191,22 @@ function This_MOD.get_elements()
 
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-    --- Fluidos a afectar
+    --- Mierales a afectar
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    local function get_resource(resource)
+    local function get_resource()
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Variable a usar
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        local Output = {}
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
         --- Objectos minables
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -200,7 +215,15 @@ function This_MOD.get_elements()
             if element.minable then
                 for _, result in pairs(element.minable.results or {}) do
                     if result.type == "item" then
-                        resource[result.name] = true
+                        local Item = GMOD.items[result.name]
+                        local Amount = This_MOD.setting.amount
+                        if This_MOD.setting.stack_size then
+                            Amount = Amount * Item.stack_size
+                            Output[result.name] =
+                                Amount > 65000 and
+                                65000 or
+                                Amount
+                        end
                     end
                 end
             end
@@ -213,12 +236,10 @@ function This_MOD.get_elements()
 
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-        --- Cargar los minerales encontrados
+        --- Devolver el resultado
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-        for name, _ in pairs(resource) do
-            resource[name] = GMOD.items[name]
-        end
+        return Output
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     end
@@ -239,9 +260,8 @@ function This_MOD.get_elements()
         GMOD.entities[This_MOD.old_entity_name]
     )
 
-    --- Material a afectar
-    This_MOD.resource = {}
-    get_resource(This_MOD.resource)
+    --- Mierales a afectar
+    This_MOD.resource = get_resource()
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
@@ -419,10 +439,6 @@ function This_MOD.create_recipe(space)
     --- Elimnar propiedades inecesarias
     Recipe.main_product = nil
 
-    --- Productividad
-    Recipe.allow_productivity = true
-    Recipe.maximum_productivity = 1000000
-
     --- Receta desbloqueada por tecnología
     Recipe.enabled = true
 
@@ -430,10 +446,6 @@ function This_MOD.create_recipe(space)
     Recipe.icons = GMOD.copy(space.item.icons)
     table.insert(Recipe.icons, This_MOD.indicator_bg)
     table.insert(Recipe.icons, This_MOD.indicator)
-
-    --- Actualizar el order
-    local Order = tonumber(Recipe.order) + 1
-    Recipe.order = GMOD.pad_left_zeros(#Recipe.order, Order)
 
     --- Ingredientes
     Recipe.ingredients = {}
@@ -467,27 +479,20 @@ function This_MOD.create_recipe___free()
     --- Procesar cada recurso
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    local function validate_resource(action, propiety, resource)
+    local function validate_resource(space)
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
         --- Calcular el valor a utilizar
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-        local Amount = This_MOD.setting.amount
-        if This_MOD.setting.stack_size then
-            Amount = Amount * resource.stack_size
-            if Amount > 65000 then
-                Amount = 65000
-            end
-        end
-
         local Name =
             This_MOD.prefix ..
-            action .. "-" .. (
+            space.action .. "-" ..
+            (
                 This_MOD.setting.stack_size and
-                resource.stack_size .. "x" .. This_MOD.setting.amount or
-                Amount
+                space.item.stack_size .. "x" .. This_MOD.setting.amount or
+                space.amount
             ) .. "u-" ..
-            resource.name
+            space.item.name
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -500,22 +505,6 @@ function This_MOD.create_recipe___free()
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
         if data.raw.recipe[Name] then return end
-
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-
-
-
-
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-        --- Crear el subgroup
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-        local Subgroup =
-            This_MOD.prefix ..
-            resource.subgroup .. "-" ..
-            action
-        GMOD.duplicate_subgroup(resource.subgroup, Subgroup)
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -543,18 +532,44 @@ function This_MOD.create_recipe___free()
         Recipe.name = Name
 
         --- Apodo y descripción
-        Recipe.localised_name = resource.localised_name
-        Recipe.localised_description = resource.localised_description
+        Recipe.localised_name = GMOD.copy(space.item.localised_name)
+        Recipe.localised_description = { "" }
 
         --- Subgrupo y Order
-        Recipe.subgroup = Subgroup
-        Recipe.order = resource.order
+        Recipe.subgroup =
+            This_MOD.prefix ..
+            space.item.subgroup .. "-" ..
+            space.action
+
+        Recipe.order = space.item.order
 
         --- Agregar indicador del MOD
-        Recipe.icons = GMOD.copy(resource.icons)
+        Recipe.icons = GMOD.copy(space.item.icons)
 
         --- Categoria de fabricación
-        Recipe.category = This_MOD.prefix .. action
+        Recipe.category = This_MOD.prefix .. space.action
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Crear el subgrupo para el objeto
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        --- Duplicar el subgrupo
+        if not GMOD.subgroups[Recipe.subgroup] then
+            GMOD.duplicate_subgroup(space.item.subgroup, Recipe.subgroup)
+
+            --- Renombrar
+            local Subgroup = GMOD.subgroups[Recipe.subgroup]
+            local Order = GMOD.subgroups[space.item.subgroup].order
+
+            --- Actualizar el order
+            Subgroup.order = 0 .. Order:sub(2)
+        end
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -566,11 +581,11 @@ function This_MOD.create_recipe___free()
         --- Variaciones entre las recetas
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-        table.insert(Recipe.icons, This_MOD[action])
-        Recipe[propiety] = { {
+        table.insert(Recipe.icons, This_MOD[space.action])
+        Recipe[space.propiety] = { {
             type = "item",
-            name = resource.name,
-            amount = Amount,
+            name = space.item.name,
+            amount = space.amount,
             ignored_by_stats = This_MOD.setting.amount
         } }
 
@@ -599,11 +614,16 @@ function This_MOD.create_recipe___free()
     --- Recorrer cada mineral
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    for _, resource in pairs(This_MOD.resource) do
-        for action, propiety in pairs(This_MOD.actions) do
-            local Resource = GMOD.copy(resource)
-            validate_resource(action, propiety, Resource)
+    for action, propiety in pairs(This_MOD.actions) do
+        for resource, amount in pairs(This_MOD.resource) do
+            validate_resource({
+                item = GMOD.items[resource],
+                action = action,
+                amount = amount,
+                propiety = propiety
+            })
         end
+        GMOD.d00b.change_orders()
     end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
