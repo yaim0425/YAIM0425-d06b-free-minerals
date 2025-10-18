@@ -614,8 +614,8 @@ function This_MOD.create_recipe___free()
     --- Recorrer cada mineral
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    for resource, amount in pairs(This_MOD.resource) do
-        for action, propiety in pairs(This_MOD.actions) do
+    for action, propiety in pairs(This_MOD.actions) do
+        for resource, amount in pairs(This_MOD.resource) do
             validate_resource({
                 item = GMOD.items[resource],
                 action = action,
@@ -623,6 +623,7 @@ function This_MOD.create_recipe___free()
                 propiety = propiety
             })
         end
+        GMOD.d00b.change_orders()
     end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
