@@ -42,11 +42,14 @@ function This_MOD.start()
     --- Crear las recetas para los minerales
     This_MOD.create_recipe___free()
 
-    --- Fijar las posiciones actual
-    GMOD.d00b.change_orders()
-
     --- Ejecutar otro MOD
-    if GMOD.d01b then GMOD.d01b.start() end
+    if GMOD.d01b then
+        --- Cambiar el tamaño de la entidad
+        GMOD.d01b.start()
+    else
+        --- Fijar las posiciones actual
+        GMOD.d00b.change_orders()
+    end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
