@@ -218,7 +218,8 @@ function This_MOD.get_elements()
             if element.minable then
                 for _, result in pairs(element.minable.results or {}) do
                     if result.type == "item" then
-                        local Item = data.raw.item[result.name]
+                        local Item = GMOD.items[result.name]
+                        if not Item then break end
                         local Amount = This_MOD.setting.amount
                         if This_MOD.setting.stack_size then
                             Amount = Amount * Item.stack_size
@@ -621,7 +622,7 @@ function This_MOD.create_recipe___free()
     for action, propiety in pairs(This_MOD.actions) do
         for resource, amount in pairs(This_MOD.resource) do
             validate_resource({
-                item = data.raw.item[resource],
+                item = GMOD.items[resource],
                 action = action,
                 amount = amount,
                 propiety = propiety
