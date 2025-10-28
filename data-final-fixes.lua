@@ -42,11 +42,14 @@ function This_MOD.start()
     --- Crear las recetas para los minerales
     This_MOD.create_recipe___free()
 
-    --- Fijar las posiciones actual
-    GMOD.d00b.change_orders()
-
     --- Ejecutar otro MOD
-    if GMOD.d01b then GMOD.d01b.start() end
+    if GMOD.d01b then
+        --- Cambiar el tamaño de la entidad
+        GMOD.d01b.start()
+    else
+        --- Fijar las posiciones actual
+        GMOD.d00b.change_orders()
+    end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
@@ -137,7 +140,7 @@ function This_MOD.get_elements()
     --- Función para analizar cada entidad
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    local function valide_entity(item, entity)
+    local function validate_entity(item, entity)
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
         --- Validación
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -216,6 +219,7 @@ function This_MOD.get_elements()
                 for _, result in pairs(element.minable.results or {}) do
                     if result.type == "item" then
                         local Item = GMOD.items[result.name]
+                        if not Item then break end
                         local Amount = This_MOD.setting.amount
                         if This_MOD.setting.stack_size then
                             Amount = Amount * Item.stack_size
@@ -255,7 +259,7 @@ function This_MOD.get_elements()
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     --- Entidad que se va a duplicar
-    valide_entity(
+    validate_entity(
         GMOD.items[This_MOD.old_entity_name],
         GMOD.entities[This_MOD.old_entity_name]
     )
