@@ -377,6 +377,7 @@ function This_MOD.create_entity(space)
 
     --- Elimnar propiedades inecesarias
     Entity.fast_replaceable_group = nil
+    Entity.effect_receiver = nil
     Entity.next_upgrade = nil
 
     --- No usa energía
