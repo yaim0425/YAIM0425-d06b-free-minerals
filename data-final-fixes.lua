@@ -217,7 +217,8 @@ function This_MOD.get_elements()
         for _, element in pairs(data.raw.resource) do
             if element.minable then
                 for _, result in pairs(element.minable.results or {}) do
-                    if result.type == "item" then
+                    repeat
+                        if result.type ~= "item" then break end
                         local Item = GMOD.items[result.name]
                         if not Item then break end
                         local Amount = This_MOD.setting.amount
@@ -228,7 +229,7 @@ function This_MOD.get_elements()
                                 65000 or
                                 Amount
                         end
-                    end
+                    until true
                 end
             end
         end
